@@ -1,43 +1,39 @@
 {
   "manifest_version": 3,
-  "name": "FB Panorama Saver",
-  "version": "1.10",
-  "description": "Save Facebook 360\u00b0 photos as stitched equirectangular panoramas, fully in-browser.",
+  "name": "Facebook 360 Photo Saver",
+  "version": "2.0",
+  "description": "Reconstruct a Facebook 360 photo as an equirectangular image.",
+  "author": "cbincus",
+  "minimum_chrome_version": "111",
+
   "icons": {
     "16": "images/icon16.png",
     "32": "images/icon32.png",
     "48": "images/icon48.png",
     "128": "images/icon128.png"
   },
-  "permissions": [
-    "downloads",
-    "storage"
-  ],
-  "host_permissions": [
-    "https://*.fbcdn.net/*"
-  ],
-  "background": {
-    "service_worker": "background.js"
-  },
+
   "content_scripts": [
     {
-      "matches": [
-        "https://facebook.com/*",
-        "https://*.facebook.com/*"
-      ],
-      "js": [
-        "content.js"
-      ],
-      "run_at": "document_idle"
+      "matches": ["https://*.facebook.com/*", "https://facebook.com/*"],
+      "js": ["projection-core.js", "fb360.js"],
+      "run_at": "document_start",
+      "all_frames": false,
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://*.facebook.com/*", "https://facebook.com/*"],
+      "js": ["projector-host.js"],
+      "run_at": "document_start",
+      "all_frames": false,
+      "world": "ISOLATED"
     }
   ],
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "images/icon16.png",
-      "32": "images/icon32.png",
-      "48": "images/icon48.png",
-      "128": "images/icon128.png"
+
+  "web_accessible_resources": [
+    {
+      "resources": ["projector.html"],
+      "matches": ["https://*.facebook.com/*"]
     }
-  }
+  ]
 }
